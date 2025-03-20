@@ -109,7 +109,7 @@ function record_variable_multilayer(
 end
 
 folder = joinpath(homedir(), "FjordsSim_results", "oslofjord")
-filename = joinpath(folder, "snapshots_LOBSTER")
+filename = joinpath(folder, "snapshots")
 T = FieldTimeSeries("$filename.jld2", "T")
 S = FieldTimeSeries("$filename.jld2", "S")
 u = FieldTimeSeries("$filename.jld2", "u")
@@ -132,6 +132,8 @@ Nz = grid["underlying_grid"]["Nz"]
 
 record_variable_multilayer(T, "temperature", [10, 12, 14, 16, 18], T.times, folder; colorrange = (0, 20), colormap = Reverse(:RdYlBu))
 record_variable_multilayer(S, "salinity", [10, 12, 14, 16, 18], S.times, folder; colorrange = (20, 37), colormap = :viridis)
+record_variable_multilayer(u, "u velocity", [10, 12, 14, 16, 18], u.times, folder; colorrange = (-1, +1), colormap = :CMRmap)
+record_variable_multilayer(v, "v velocity", [10, 12, 14, 16, 18], v.times, folder; colorrange = (-1, +1), colormap = :CMRmap)
 record_variable_multilayer(DIC, "dissolved inorganic carbon", [10, 12, 14, 16, 18], DIC.times, folder; colorrange = (2200, 2300), colormap = Reverse(:CMRmap))
 record_variable_multilayer(P, "phytoplankton", [10, 12, 14, 16, 18], P.times, folder; colorrange = (0, 1), colormap = Reverse(:cubehelix))
 
@@ -139,8 +141,8 @@ record_bottom_tracer(O₂, "oxygen", Nz, O₂.times, folder; figsize = (300, 700
 
 record_variable(T, "temperature surface", Nz, T.times, folder, (300, 450); colorrange = (2, 6), colormap = Reverse(:RdYlBu))
 record_variable(S, "salinity surface", Nz, S.times, folder, (300, 450); colorrange = (20, 37), colormap = :viridis)
-record_variable(u, "u velocity surface", Nz, u.times, folder, (300, 450); colorrange = (-1, 1))
-record_variable(v, "v velocity surface", Nz, v.times, folder, (300, 450); colorrange = (-1, 1))
+record_variable(u, "u velocity surface", Nz, u.times, folder, (300, 450); colorrange = (-1, 1), colormap = :cubehelix)
+record_variable(v, "v velocity surface", Nz, v.times, folder, (300, 450); colorrange = (-1, 1), colormap = :cubehelix)
 record_variable(O₂, "O₂ surface", Nz, O₂.times, folder, (300, 700); colorrange = (0, 400), colormap = :turbo)
 record_variable(NUT, "NUT surface", Nz, v.times, folder, (300, 700); colorrange = (0, 5))
 record_variable(PHY, "PHY surface", Nz, v.times, folder, (300, 700); colorrange = (0, 5), colormap = Reverse(:cubehelix))
@@ -149,4 +151,3 @@ record_variable(Z, "Z surface", Nz, Z.times, folder, (300, 700); colorrange = (0
 record_variable(NO₃, "NO₃ surface", Nz, NO₃.times, folder, (300, 700); colorrange = (0, 20))
 record_variable(DIC, "DIC surface", Nz, DIC.times, folder, (300, 700); colorrange = (2230, 2270))
 record_variable(Alk, "Alk surface", Nz, Alk.times, folder, (300, 700); colorrange = (2300, 2500))
-

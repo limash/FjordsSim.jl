@@ -34,7 +34,7 @@ ocean_model = ocean_sim.model
 prefix = joinpath(sim_setup.results_dir, "snapshots")
 ocean_sim.output_writers[:all] = JLD2OutputWriter(
     ocean_model, merge(ocean_model.tracers, ocean_model.velocities);
-    schedule = TimeInterval(6hours),
+    schedule = TimeInterval(1hours),
     filename = "$prefix.jld2",
     overwrite_existing = true,
     array_type=Array{Float32}
@@ -51,8 +51,8 @@ run!(coupled_simulation)
 ## Running the simulation
 # This time, we set the CFL in the time_step_wizard to be 0.25 as this is the maximum recommended CFL to be
 # used in conjunction with Oceananigans' hydrostatic time-stepping algorithm ([two step Adams-Bashfort](https://en.wikipedia.org/wiki/Linear_multistep_method))
-ocean_sim.stop_time = 355days
-coupled_simulation.stop_time = 355days
-
-conjure_time_step_wizard!(ocean_sim; cfl=0.25, max_Δt=10minutes, max_change=1.01)
-run!(coupled_simulation)
+# ocean_sim.stop_time = 355days
+# coupled_simulation.stop_time = 355days
+# 
+# conjure_time_step_wizard!(ocean_sim; cfl=0.25, max_Δt=10minutes, max_change=1.01)
+# run!(coupled_simulation)
