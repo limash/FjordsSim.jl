@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+using CUDA
+CUDA.set_runtime_version!(v"12.2")
 
 using Oceananigans.Units: second, seconds, minute, minutes, hour, hours, day, days
 using Oceananigans.Utils: TimeInterval, IterationInterval
@@ -26,7 +28,7 @@ using FjordsSim: progress, coupled_hydrostatic_simulation
 include("setup.jl")
 
 ## Model Setup
-sim_setup = setup_region_3d()
+sim_setup = setup_region_3d_OXYDEP()
 
 coupled_simulation = coupled_hydrostatic_simulation(sim_setup)
 
