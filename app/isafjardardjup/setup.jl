@@ -23,6 +23,7 @@ using FjordsSim:
     regional_roughness_lengths,
     free_surface_default,
     JRA55PrescribedAtmosphere,
+    ComponentInterfaces,
     biogeochemistry_LOBSTER,
     biogeochemistry_OXYDEP,
     biogeochemistry_ref
@@ -112,6 +113,9 @@ function setup_region(;
         latitude = (65.76, 66.399),
         longitude = (-23.492, -22.3),
     ),
+    component_interfaces_callable = ComponentInterfaces,
+    component_interfaces_args = (),
+
     # Ocean emissivity from https://link.springer.com/article/10.1007/BF02233853
     # With suspended matter 0.96 https://www.sciencedirect.com/science/article/abs/pii/0034425787900095
     radiation = Radiation(grid_args.arch; ocean_emissivity = 0.96),
