@@ -23,6 +23,7 @@ using FjordsSim:
     regional_roughness_lengths,
     free_surface_default,
     JRA55PrescribedAtmosphere,
+    ComponentInterfaces,
     biogeochemistry_LOBSTER,
     biogeochemistry_OXYDEP,
     biogeochemistry_ref
@@ -63,17 +64,6 @@ args_oxydep = (
     sinking_speeds = (P = 0.15 / day, HET = 4.0 / day, POM = 10.0 / day),
 )
 
-# Values on the open boundary
-external_values = (
-    T = 10.0,
-    S = 18.0,
-    C = 0.0,  # C passive tracer, Contaminant
-    NUT = 2.0,
-    DOM = 1.0,
-    O₂ = 250.0,
-    P = 0.001,
-    HET = 0.001,
-)
 
 function setup_region(;
     # Grid
@@ -81,17 +71,17 @@ function setup_region(;
     grid_args = (
         arch = GPU(),
         halo = (7, 7, 7),
-        filepath = joinpath(homedir(), "FjordsSim_data", "sognefjord", "Sogn_topo800.jld2"),
-        latitude = (60.6315, 61.5),
-        longitude = (4.186, 7.72),
+        filepath = joinpath(homedir(), "FjordsSim_data", "isafjardardjup", "Isf_topo299x320.jld2"),
+        latitude = (65.76, 66.399),
+        longitude = (-23.492, -22.3),
     ),
     # Buoyancy
     buoyancy = SeawaterBuoyancy(;
         equation_of_state = TEOS10EquationOfState(; reference_density),
     ),
     # Closure
-    closure = ConvectiveAdjustmentVerticalDiffusivity(convective_κz = 5e-4, background_κz = 1e-5),
-    #closure = TKEDissipationVerticalDiffusivity(),
+    #closure = ConvectiveAdjustmentVerticalDiffusivity(convective_κz = 5e-4, background_κz = 1e-5),
+    closure = TKEDissipationVerticalDiffusivity(),
 
     # Tracer advection
     tracer_advection = (T = WENO(), S = WENO(), e = nothing, ϵ = nothing),
@@ -110,10 +100,9 @@ function setup_region(;
     # forcing_callable = NamedTuple,
     forcing_args = (
         grid_ref = grid_ref,
-        filepath = joinpath(homedir(), "FjordsSim_data", "sognefjord", "Sogn_bry800.nc"),
+        filepath = joinpath(homedir(), "FjordsSim_data", "isafjardardjup", "Isf_bry_299x320.nc"),
         tracers = tracers,
     ),
-    # forcing_args = (),
     # Boundary conditions
     bc_callable = bc_ocean,
     bc_args = (grid_ref, bottom_drag_coefficient),
@@ -121,9 +110,12 @@ function setup_region(;
     atmosphere_callable = JRA55PrescribedAtmosphere,
     atmosphere_args = (
         arch = grid_args.arch,
-        latitude = (60.6315, 61.5),
-        longitude = (4.186, 7.72),
+        latitude = (65.76, 66.399),
+        longitude = (-23.492, -22.3),
     ),
+    component_interfaces_callable = ComponentInterfaces,
+    component_interfaces_args = (),
+
     # Ocean emissivity from https://link.springer.com/article/10.1007/BF02233853
     # With suspended matter 0.96 https://www.sciencedirect.com/science/article/abs/pii/0034425787900095
     radiation = Radiation(grid_args.arch; ocean_emissivity = 0.96),
@@ -144,7 +136,7 @@ function setup_region(;
     biogeochemistry_callable = nothing,
     biogeochemistry_args = (nothing,),
     # Output folder
-    results_dir = joinpath(homedir(), "FjordsSim_results", "sognefjord"),
+    results_dir = joinpath(homedir(), "FjordsSim_results", "isafjardardjup"),
 )
 
     return SetupModel(
