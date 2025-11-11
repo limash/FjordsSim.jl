@@ -9,26 +9,14 @@ function top_bottom_boundary_conditions(; grid, bottom_drag_coefficient)
     top_salt_flux = Jˢ = Field{Center,Center,Nothing}(grid)
 
     u_bot_bc =
-        FluxBoundaryCondition(u_quadratic_bottom_drag, discrete_form=true, parameters=bottom_drag_coefficient)
+        FluxBoundaryCondition(u_quadratic_bottom_drag, discrete_form = true, parameters = bottom_drag_coefficient)
     v_bot_bc =
-        FluxBoundaryCondition(v_quadratic_bottom_drag, discrete_form=true, parameters=bottom_drag_coefficient)
+        FluxBoundaryCondition(v_quadratic_bottom_drag, discrete_form = true, parameters = bottom_drag_coefficient)
 
     return (
-        u=(top=FluxBoundaryCondition(τx), bottom=u_bot_bc),
-        v=(top=FluxBoundaryCondition(τy), bottom=v_bot_bc),
-        T=(top=FluxBoundaryCondition(Jᵀ),),
-        S=(top=FluxBoundaryCondition(Jˢ),),
-    )
-end
-
-@inline open(x, y, t, v) = v
-
-function south_open_boundary_conditions()
-    return (v=(
-        south=OpenBoundaryCondition(
-            open,
-            field_dependencies=(:v),
-        ),
-    ),
+        u = (top = FluxBoundaryCondition(τx), bottom = u_bot_bc),
+        v = (top = FluxBoundaryCondition(τy), bottom = v_bot_bc),
+        T = (top = FluxBoundaryCondition(Jᵀ),),
+        S = (top = FluxBoundaryCondition(Jˢ),),
     )
 end

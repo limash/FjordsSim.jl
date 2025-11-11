@@ -32,9 +32,8 @@ tbbc = top_bottom_boundary_conditions(;
         grid=grid,
         bottom_drag_coefficient=0.003,
     )
-boundary_conditions = map(x -> FieldBoundaryConditions(;x...), tbbc)
-# sobc = south_open_boundary_conditions()
-# boundary_conditions = map(x -> FieldBoundaryConditions(;x...), recursive_merge(tbbc, sobc))
+sobc = (v = (south = OpenBoundaryCondition(nothing),),)
+boundary_conditions = map(x -> FieldBoundaryConditions(;x...), recursive_merge(tbbc, sobc))
 atmosphere = JRA55PrescribedAtmosphere(arch, FT;
     latitude=(58.98, 59.94),
     longitude=(10.18, 11.03),

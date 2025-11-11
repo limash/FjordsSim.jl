@@ -7,7 +7,6 @@ export
     forcing_from_file,
     # boundary conditions
     top_bottom_boundary_conditions,
-    south_open_boundary_conditions,
     # simulations
     coupled_hydrostatic_simulation,
     # utils
