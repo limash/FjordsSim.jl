@@ -1,7 +1,6 @@
 using Oceananigans.Fields: interior
 using Oceananigans.OutputReaders: FieldTimeSeries, OnDisk
-using Oceananigans.Utils: prettytime, pretty_filesize
-using NCDatasets: Dataset
+using Oceananigans.Utils: prettytime
 using JLD2: @save
 using Printf: @sprintf
 
@@ -56,7 +55,7 @@ function extract_z_faces(grid)
 end
 
 function netcdf_to_jld2(netcdf_file::String, jld2_file::String)
-    ds = Dataset(netcdf_file, "r")
+    ds = NCDataset(netcdf_file, "r")
     data_dict = Dict()
     for varname in keys(ds)
         data_dict[varname] = convert(Array, ds[varname])
@@ -83,3 +82,27 @@ function save_fts(; jld2_filepath, fts_name, fts, grid, times, boundary_conditio
     end
 end
 
+function recursive_merge(nt1::NamedTuple, nt2::NamedTuple)
+    # Get all unique keys from both NamedTuples
+    all_keys = union(keys(nt1), keys(nt2))
+
+    # Initialize an empty NamedTuple for the result
+    result_pairs = Pair{Symbol, Any}[]
+
+    for key in all_keys
+        val1 = get(nt1, key, nothing)
+        val2 = get(nt2, key, nothing)
+
+        if val1 isa NamedTuple && val2 isa NamedTuple
+            # If both values are NamedTuples, recursively merge them
+            push!(result_pairs, key => recursive_merge(val1, val2))
+        elseif val2 !== nothing
+            # If only val2 exists or is not a NamedTuple, use val2
+            push!(result_pairs, key => val2)
+        else
+            # Otherwise, use val1 (if it exists)
+            push!(result_pairs, key => val1)
+        end
+    end
+    return (; result_pairs...)
+end

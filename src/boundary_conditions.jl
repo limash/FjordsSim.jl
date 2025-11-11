@@ -1,46 +1,34 @@
-using Oceananigans.BoundaryConditions: FluxBoundaryCondition, FieldBoundaryConditions
-using Oceananigans.ImmersedBoundaries: ImmersedBoundaryCondition
-using Oceananigans.Operators: ℑxyᶜᶠᵃ, ℑxyᶠᶜᵃ
-using Oceananigans.Units: days
-using Oceananigans.Architectures: GPU, CPU
-using Oceananigans.Grids: Center, Face
+using Oceananigans.BoundaryConditions: FluxBoundaryCondition
 using ClimaOcean.OceanSimulations: u_quadratic_bottom_drag, v_quadratic_bottom_drag
-using OceanBioME: CarbonDioxideGasExchangeBoundaryCondition
 
-function bc_ocean(grid_ref, bottom_drag_coefficient)
-    grid = grid_ref[]
-    # Set up boundary conditions using Field
+""" Return a named tuple with boundary conditions """
+function top_bottom_boundary_conditions(; grid, bottom_drag_coefficient)
     top_zonal_momentum_flux = τx = Field{Face,Center,Nothing}(grid)
     top_meridional_momentum_flux = τy = Field{Center,Face,Nothing}(grid)
     top_ocean_heat_flux = Jᵀ = Field{Center,Center,Nothing}(grid)
     top_salt_flux = Jˢ = Field{Center,Center,Nothing}(grid)
 
     u_bot_bc =
-        FluxBoundaryCondition(u_quadratic_bottom_drag, discrete_form = true, parameters = bottom_drag_coefficient)
+        FluxBoundaryCondition(u_quadratic_bottom_drag, discrete_form=true, parameters=bottom_drag_coefficient)
     v_bot_bc =
-        FluxBoundaryCondition(v_quadratic_bottom_drag, discrete_form = true, parameters = bottom_drag_coefficient)
+        FluxBoundaryCondition(v_quadratic_bottom_drag, discrete_form=true, parameters=bottom_drag_coefficient)
 
-    bc_ocean = (
-        u = FieldBoundaryConditions(top = FluxBoundaryCondition(τx), bottom = u_bot_bc),
-        v = FieldBoundaryConditions(top = FluxBoundaryCondition(τy), bottom = v_bot_bc),
-        T = FieldBoundaryConditions(top = FluxBoundaryCondition(Jᵀ)),
-        S = FieldBoundaryConditions(top = FluxBoundaryCondition(Jˢ)),
+    return (
+        u=(top=FluxBoundaryCondition(τx), bottom=u_bot_bc),
+        v=(top=FluxBoundaryCondition(τy), bottom=v_bot_bc),
+        T=(top=FluxBoundaryCondition(Jᵀ),),
+        S=(top=FluxBoundaryCondition(Jˢ),),
     )
-    return bc_ocean
 end
 
-function bc_varna_bgh_oxydep(grid_ref, bottom_drag_coefficient, biogeochemistry_ref)
-    Nz = grid_ref[].Nz
-    bgc_model = biogeochemistry_ref[]
-    bc_varna_tuple = bc_ocean(grid_ref, bottom_drag_coefficient)
-    bc_bgh_oxydep_tuple = bgh_oxydep_boundary_conditions(bgc_model, Nz)
+@inline open(x, y, t, v) = v
 
-    return merge(bc_varna_tuple, bc_bgh_oxydep_tuple)
-end
-
-function bc_lobster(grid_ref, bottom_drag_coefficient)
-    bc_general = bc_ocean(grid_ref, bottom_drag_coefficient)
-    CO₂_flux = CarbonDioxideGasExchangeBoundaryCondition()
-    bc_lobster = (DIC = FieldBoundaryConditions(top = CO₂_flux),)
-    return merge(bc_general, bc_lobster)
+function south_open_boundary_conditions()
+    return (v=(
+        south=OpenBoundaryCondition(
+            open,
+            field_dependencies=(:v),
+        ),
+    ),
+    )
 end

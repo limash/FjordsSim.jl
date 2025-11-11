@@ -1,26 +1,32 @@
 name = "FjordsSim"
-uuid = "0c33e1da-db83-441e-bdcc-232a98675987"
-authors = ["limash <yakubov.sha@gmail.com>"]
-version = "0.1.0"
+uuid = "70d6b63c-c5d4-46ce-8d1e-8766361373eb"
+authors = ["sia <yakubov.sha@gmail.com> and contributors"]
+version = "1.0.0-DEV"
 
 [deps]
 Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
-CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
-CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 ClimaOcean = "0376089a-ecfe-4b0e-a64f-9c555d74d754"
-DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
-Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
-FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-GPUArrays = "0c68f7d7-f131-5f86-a1c3-88cf8149b2d7"
-Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
 OceanBioME = "a49af516-9db8-4be4-be45-1dad61c5a376"
 Oceananigans = "9e8cae18-63c1-5223-a75c-80ca9d6e9a09"
-Oceanostics = "d0ccf422-c8fb-49b5-a76d-74acdde946ac"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-Scratch = "6c6a2e73-6563-6170-7368-637461726353"
 SeawaterPolynomials = "d496a93d-167e-4197-9f49-d3af4ff8fe40"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[compat]
+Adapt = "4.4.0"
+ClimaOcean = "0.8.7"
+JLD2 = "0.6.2"
+NCDatasets = "0.14.9"
+OceanBioME = "0.14.9"
+Oceananigans = "0.100.7"
+SeawaterPolynomials = "0.3.10"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

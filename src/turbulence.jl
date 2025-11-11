@@ -1,4 +1,3 @@
-using Oceananigans.Utils
 using Oceananigans.TimeSteppers: implicit_step!
 using Oceananigans.TurbulenceClosures.TKEBasedVerticalDiffusivities:
     TKEDissipationDiffusivityFields,
@@ -179,9 +178,17 @@ function time_step_tke_dissipation_equations!(
             G⁻ϵ,
         )
 
-        implicit_step!(e, implicit_solver, closure, diffusivities, Val(e_index), model.clock, Δτ)
+        implicit_step!(e, implicit_solver, closure,
+                       diffusivities, Val(e_index),
+                       model.clock, 
+                       fields(model),
+                       Δτ)
 
-        implicit_step!(ϵ, implicit_solver, closure, diffusivities, Val(ϵ_index), model.clock, Δτ)
+        implicit_step!(ϵ, implicit_solver, closure,
+                       diffusivities, Val(ϵ_index),
+                       model.clock, 
+                       fields(model),
+                       Δτ)
     end
 
     return nothing
