@@ -145,7 +145,7 @@ end
 
 function load_from_netcdf(; path::String, var_name::String, grid_size::Tuple, time_indices_in_memory::Tuple)
     ds = NCDataset(path)
-    var = ds[var_name]
+    var = coalesce.(ds[var_name], -999.0)
     native_times = ds["time"]
 
     data = zeros(Float64, (grid_size[1:end]..., length(time_indices_in_memory)))

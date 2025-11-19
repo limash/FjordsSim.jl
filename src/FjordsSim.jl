@@ -32,6 +32,10 @@ include("grid.jl")
 include("turbulence.jl")
 include("utils.jl")
 
+include("FDatasets.jl")
+
+using .FDatasets
+
 function coupled_hydrostatic_simulation(
     grid,
     buoyancy,
