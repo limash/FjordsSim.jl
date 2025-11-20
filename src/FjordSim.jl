@@ -1,4 +1,4 @@
-module FjordsSim 
+module FjordSim 
 
 export
     # oceananigans methods
@@ -52,7 +52,7 @@ function coupled_hydrostatic_simulation(
     downwelling_radiation,
     sea_ice,
     biogeochemistry;
-    results_dir=joinpath(homedir(), "FjordsSim_results"),
+    results_dir=joinpath(homedir(), "FjordSim_results"),
     stop_time=365days,
 )
     isdir(results_dir) || mkpath(results_dir)

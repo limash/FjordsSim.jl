@@ -1,6 +1,6 @@
-using FjordsSim
+using FjordSim
 using Test
 
-@testset "FjordsSim.jl" begin
+@testset "FjordSim.jl" begin
     println("Testing...")
 end

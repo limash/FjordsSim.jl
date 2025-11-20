@@ -2,15 +2,14 @@ using Oceananigans
 using Oceananigans.Units
 using ClimaOcean
 using SeawaterPolynomials.TEOS10
-using FjordsSim
-using FjordsSim.FDatasets
+using FjordSim
+using FjordSim.FDatasets
 
 const FT = Oceananigans.defaults.FloatType
 
 arch = GPU()
 grid = ImmersedBoundaryGrid(
-    # joinpath(homedir(), "FjordsSim_data", "oslofjord", "OF_inner_105to232_bathymetry_v3.nc"),
-    joinpath(homedir(), "FjordsSim_data", "oslofjord", "bathymetry_105to232.nc"),
+    joinpath(homedir(), "FjordSim_data", "oslofjord", "bathymetry_105to232.nc"),
     arch,
     (7, 7, 7),
 )
@@ -25,19 +24,18 @@ tracers = (:T, :S, :e, :ϵ)
 initial_conditions = (
     T = Metadatum(
         :temperature,
-        dataset = DSForcing("forcing_105to232.nc", joinpath(homedir(), "FjordsSim_data", "oslofjord")),
+        dataset = DSForcing("forcing_105to232.nc", joinpath(homedir(), "FjordSim_data", "oslofjord")),
     ),
     S = Metadatum(
         :salinity,
-        dataset = DSForcing("forcing_105to232.nc", joinpath(homedir(), "FjordsSim_data", "oslofjord")),
+        dataset = DSForcing("forcing_105to232.nc", joinpath(homedir(), "FjordSim_data", "oslofjord")),
     ),
 )
 free_surface = SplitExplicitFreeSurface(grid, cfl = 0.7)
 coriolis = HydrostaticSphericalCoriolis(FT)
 forcing = forcing_from_file(;
     grid = grid,
-    # filepath=joinpath(homedir(), "FjordsSim_data", "oslofjord", "OF_inner_105to232_forcing_v2.nc"),
-    filepath = joinpath(homedir(), "FjordsSim_data", "oslofjord", "forcing_105to232.nc"),
+    filepath = joinpath(homedir(), "FjordSim_data", "oslofjord", "forcing_105to232.nc"),
     tracers = tracers,
 )
 tbbc = top_bottom_boundary_conditions(; grid = grid, bottom_drag_coefficient = 0.003)
@@ -48,12 +46,12 @@ atmosphere = JRA55PrescribedAtmosphere(
     FT;
     latitude = (58.98, 59.94),
     longitude = (10.18, 11.03),
-    dir = joinpath(homedir(), "FjordsSim_data", "JRA55"),
+    dir = joinpath(homedir(), "FjordSim_data", "JRA55"),
 )
 downwelling_radiation = Radiation(arch, FT; ocean_emissivity = 0.96, ocean_albedo = 0.1)
 sea_ice = FreezingLimitedOceanTemperature()
 biogeochemistry = nothing
-results_dir = joinpath(homedir(), "FjordsSim_results", "oslofjord")
+results_dir = joinpath(homedir(), "FjordSim_results", "oslofjord")
 stop_time = 365days
 
 simulation = coupled_hydrostatic_simulation(
